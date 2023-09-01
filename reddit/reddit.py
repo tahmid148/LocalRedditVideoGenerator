@@ -54,6 +54,13 @@ def df_from_response(res):
         return pd.DataFrame(post_data)
 
 # Make a request for the trending posts in /r/Python
-res = requests.get("https://oauth.reddit.com/r/python/hot",
+res = requests.get("https://oauth.reddit.com/r/AmITheAsshole/hot",
                    headers=headers,
                    params={'limit':'25'})
+
+df = df_from_response(res)
+
+# Iterate through each row in dataframe, skipping the first
+for index, row in df.iloc[1:].iterrows():
+    title = row[1]
+    post_text = row[2]
