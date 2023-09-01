@@ -21,15 +21,10 @@ def create_synthesizer():
         tts_config_path=config_path,
     )
 
-def generate_speech(syn, output_name):
-    # Text to be converted into speech
-    # text_input_path = "input.txt"
-    # with open(text_input_path, "r", encoding="utf-8") as file:
-    #     text = file.read()
-        
+def generate_speech(syn, input, output_name):
     print("Converting text...")
     # Synthesize speech from text
-    output = syn.tts("Hi my name is jim")
+    output = syn.tts(input)
 
     print("Saving output file...")
     # Save the generated speech as an audio file
