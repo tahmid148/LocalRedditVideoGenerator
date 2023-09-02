@@ -4,8 +4,8 @@ from utils.CustomStream import CustomStream
 import sys, re, datetime
 
 # Specify the file name where you want to save the output
-# current_time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-output_file = f"log.txt"
+current_time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+output_file = f"log-{current_time}.txt"
 
 # Create or open the output file for writing
 with open(output_file, "w") as file:
