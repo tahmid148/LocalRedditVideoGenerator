@@ -35,7 +35,7 @@ def get_hot_posts(headers):
     # Make a request for the trending posts in /r/Python
     res = requests.get("https://oauth.reddit.com/r/AmITheAsshole/hot",
                     headers=headers,
-                    params={'limit':'1'})
+                    params={'limit':'100'})
 
     # Loop through each post received from GET reqeust
     for post in res.json()['data']['children']:
