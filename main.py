@@ -6,7 +6,6 @@ headers = connect_reddit()
 posts_df = get_hot_posts(headers)
 
 for index, row in posts_df.iloc[1:].iterrows():
-    print(f"Go: {index}")
     title = row[1]
     post_text = row[2]
     
