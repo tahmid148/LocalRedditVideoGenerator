@@ -1,39 +1,31 @@
 import config  # Assuming you have a 'config.py' file with your Reddit credentials
-import requests, pandas as pd
+import requests, pandas as pd, praw
+
 
 def connect_reddit():
-    # Set up basic authentication using client ID and secret key
-    auth = requests.auth.HTTPBasicAuth(config.REDDIT_CLIENT_ID, config.REDDIT_SECRET_KEY)
+     return praw.Reddit(
+        client_id=config.REDDIT_CLIENT_ID,
+        client_secret=config.REDDIT_SECRET_KEY,
+        user_agent='RedditReader/0.0.1',
+        username= config.REDDIT_USERNAME,
+        password=config.REDDIT_PASSWORD
+    )
 
-    # Define the data for the authentication request
-    data = {
-        'grant_type': 'password',
-        'username': config.REDDIT_USERNAME,
-        'password': config.REDDIT_PASSWORD
-    }
+def get_post(headers, url):
+    res = requests.get(f"{url}.json", headers=headers)
+    print(f"{url}.json")
+    print(res)
 
-    # Set custom user-agent in headers (required by Reddit API)
-    headers = {
-        'User-Agent': 'RedditReader/0.0.1'
-    }
+def new_get_host_posts(reddit, subreddit_name, no_of_posts):
+    return reddit.subreddit(subreddit_name).hot(limit=no_of_posts)
 
-    # Send a POST request to obtain an access token from Reddit's API
-    res = requests.post('https://www.reddit.com/api/v1/access_token', auth=auth, data=data, headers=headers)
-
-    # Extract the access token from the response JSON
-    TOKEN = res.json()['access_token']
-
-    # Add the access token to the headers for authorization
-    headers = {**headers, **{'Authorization': f"bearer {TOKEN}"}}
-    
-    return headers
 
 def get_hot_posts(headers):
     # List to store data of posts
     post_data = []
 
     # Make a request for the trending posts in /r/Python
-    res = requests.get("https://oauth.reddit.com/r/AmITheAsshole/hot",
+    res = requests.get("https://oauth.reddit.com/r/TrueOffMyChest/hot",
                     headers=headers,
                     params={'limit':'100'})
 

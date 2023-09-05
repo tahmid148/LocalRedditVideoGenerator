@@ -1,28 +1,27 @@
 from tts.executeModel import create_synthesizer, generate_speech
-from reddit.reddit import connect_reddit, get_hot_posts
+from reddit.reddit import connect_reddit, get_hot_posts, get_post, new_get_host_posts
 from utils.CustomStream import CustomStream
 import sys, re, datetime
 
 # Specify the file name where you want to save the output
 current_time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-output_file = f"log-{current_time}.txt"
+output_file = f"output/log-{current_time}.txt"
 
-# Create or open the output file for writing
-with open(output_file, "w") as file:
-    custom_stream = CustomStream(file, sys.stdout)
+reddit = connect_reddit()
 
-    # Redirect stdout to the custom stream
-    sys.stdout = custom_stream
-
+def generate_hot_posts(no_of_posts):
+    posts = new_get_host_posts(reddit, "AmITheAsshole", no_of_posts)
     syn = create_synthesizer()
-    headers = connect_reddit()
-    posts_df = get_hot_posts(headers)
 
-    for index, row in posts_df.iloc[24:].iterrows():
-        print(f"Progress: {index} / {posts_df.shape[0]}")
-        title = row[1]
-        post_text = row[2]
 
+    for index, submission in enumerate(posts):
+        print(f"Progress: {index + 1} / {no_of_posts}")
+        title = submission.title
+        post_text = submission.selftext
+        
+        print(title)
+        print(post_text)
+    
         # Replace "AITA" with "Am I the asshole" in both title and post_text
         title = title.replace("AITA", "Am I the asshole")
         post_text = post_text.replace("AITA", "Am I the asshole")
@@ -33,7 +32,15 @@ with open(output_file, "w") as file:
         
         generate_speech(syn, title + "\n" + post_text, re.sub(r'[^a-zA-Z0-9\s]', '', title))
 
-# Restore stdout to its original state
-sys.stdout = sys.__stdout__
+def main():
+    print("Hello world")
 
-print("Output saved to:", output_file)
+if __name__ == "__main__":
+    with open(output_file, "w") as file:
+        custom_stream = CustomStream(file, sys.stdout)
+        # Redirect stdout to the custom stream
+        sys.stdout = custom_stream
+        main()
+    # Restore stdout to its original state
+    sys.stdout = sys.__stdout__
+    print("Output saved to:", output_file)
