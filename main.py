@@ -1,5 +1,5 @@
 from tts.executeModel import create_synthesizer, generate_speech
-from reddit.reddit import connect_reddit, get_hot_posts, get_post, new_get_host_posts
+from reddit.reddit import connect_reddit, get_hot_posts, get_post
 from utils.CustomStream import CustomStream
 import sys, re, datetime
 
@@ -10,7 +10,7 @@ output_file = f"output/log-{current_time}.txt"
 reddit = connect_reddit()
 
 def generate_hot_posts(no_of_posts):
-    posts = new_get_host_posts(reddit, "AmITheAsshole", no_of_posts)
+    posts = get_hot_posts(reddit, "AmITheAsshole", no_of_posts)
     syn = create_synthesizer()
 
 
@@ -20,6 +20,7 @@ def generate_hot_posts(no_of_posts):
         post_text = submission.selftext
         
         print(title)
+        print("\n")
         print(post_text)
     
         # Replace "AITA" with "Am I the asshole" in both title and post_text
@@ -32,8 +33,13 @@ def generate_hot_posts(no_of_posts):
         
         generate_speech(syn, title + "\n" + post_text, re.sub(r'[^a-zA-Z0-9\s]', '', title))
 
+def generate_from_post(id):
+    submission = get_post(reddit, id)
+    print(submission.title)
+    
+
 def main():
-    print("Hello world")
+    generate_from_post("15vlv9g")
 
 if __name__ == "__main__":
     with open(output_file, "w") as file:
